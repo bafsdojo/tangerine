@@ -530,7 +530,8 @@
     </audio>
 
     <script>
-        const transactions = [
+        // Clean dataset without "(be specific)"
+        const baseTransactions = [
             { item: "Owner introduced cash to firm", dr: "Cash", cr: "Capital", wrong: ["Owner", "Bank"] },
             { item: "Proprietor contributed money to the business bank account", dr: "Bank", cr: "Capital", wrong: ["Proprietor", "Cash"] },
             { item: "Borrowed money from bank", dr: "Bank", cr: "Bank Loan", wrong: ["Loan"] },
@@ -544,27 +545,29 @@
             { item: "Sale of buildings on Credit, with no gain or loss", dr: "Other Receivables", cr: "Buildings", wrong: ["Sales", "Purchases"] },
             { item: "Repayment of other payables by bank", dr: "Other Payables", cr: "Bank", wrong: [] },
             { item: "Owner bringing in furniture for business use", dr: "Furniture", cr: "Capital", wrong: ["Owner"] },
-            { item: "Owner helping business to repay debt", dr: "Bank loan / Other Payables / Trade Payables (be specific)", cr: "Capital", wrong: ["Owner", "Debt"] },
+            { item: "Owner helping business to repay debt", dr: "Bank loan / Other Payables / Trade Payables", cr: "Capital", wrong: ["Owner", "Debt"] },
             { item: "Owner took money from cash box for personal use", dr: "Drawings", cr: "Cash", wrong: ["Bank"] },
             { item: "Purchased goods in cash", dr: "Purchases", cr: "Cash", wrong: ["Sales", "Bank"] },
-            { item: "Purchased goods from credit supplier", dr: "Purchases", cr: "Trade Payables (be specific)", wrong: ["Sales", "Trade receivables"] },
+            { item: "Purchased goods from credit supplier", dr: "Purchases", cr: "Trade Payables", wrong: ["Sales", "Trade receivables"] },
             { item: "Returned goods to supplier, previously bought through bank transfer", dr: "Bank", cr: "Returns Outwards", wrong: ["Returns inwards", "Cash"] },
-            { item: "Returned goods to credit supplier", dr: "Trade Payables (be specific)", cr: "Returns Outwards", wrong: ["Returns inwards", "Trade receivables"] },
-            { item: "Payment to credit supplier with cash discount", dr: "Trade Payables (be specific)", cr: "Cash / Bank AND Discounts Received", wrong: ["Trade receivables", "Cash / Bank AND Discounts Allowed"] },
+            { item: "Returned goods to credit supplier", dr: "Trade Payables", cr: "Returns Outwards", wrong: ["Returns inwards", "Trade receivables"] },
+            { item: "Payment to credit supplier with cash discount", dr: "Trade Payables", cr: "Cash / Bank AND Discounts Received", wrong: ["Trade receivables", "Cash / Bank AND Discounts Allowed"] },
             { item: "Sold goods for cash", dr: "Cash", cr: "Sales", wrong: ["Purchases", "Bank"] },
-            { item: "Sold goods on credit", dr: "Trade Receivables (be specific)", cr: "Sales", wrong: ["Trade payables", "Purchases"] },
+            { item: "Sold goods on credit", dr: "Trade Receivables", cr: "Sales", wrong: ["Trade payables", "Purchases"] },
             { item: "Customer, who had previously bought goods in cash, returned goods to the firm", dr: "Returns Inwards", cr: "Cash", wrong: ["Returns outwards", "Bank"] },
-            { item: "Customer, who had previously bought goods on credit, returned goods to the firm", dr: "Returns Inwards", cr: "Trade Receivables (be specific)", wrong: ["Returns outwards", "Trade payables"] },
-            { item: "Receipt from customers with cash discount", dr: "Cash / Bank AND Discounts Allowed", cr: "Trade Receivables (be specific)", wrong: ["Cash / Bank AND Discounts Received", "Trade payables"] },
-            { item: "Paid expenses by cash", dr: "Expenses (be specific)", cr: "Cash", wrong: ["Bank"] },
-            { item: "Receive refund of overpaid expenses by bank", dr: "Bank", cr: "Expenses (be specific)", wrong: ["Cash"] },
-            { item: "Receipt of income by bank transfer", dr: "Bank", cr: "Income (be specific)", wrong: ["Cash"] },
+            { item: "Customer, who had previously bought goods on credit, returned goods to the firm", dr: "Returns Inwards", cr: "Trade Receivables", wrong: ["Returns outwards", "Trade payables"] },
+            { item: "Receipt from customers with cash discount", dr: "Cash / Bank AND Discounts Allowed", cr: "Trade Receivables", wrong: ["Cash / Bank AND Discounts Received", "Trade payables"] },
+            { item: "Paid expenses by cash", dr: "Expenses", cr: "Cash", wrong: ["Bank"] },
+            { item: "Receive refund of overpaid expenses by bank", dr: "Bank", cr: "Expenses", wrong: ["Cash"] },
+            { item: "Receipt of income by bank transfer", dr: "Bank", cr: "Income", wrong: ["Cash"] },
             { item: "Owner withdrew goods for household use", dr: "Drawings", cr: "Purchases", wrong: ["Owner", "Goods"] },
             { item: "Owner withdrew stationery for private use", dr: "Drawings", cr: "Stationery", wrong: ["Owner"] }
         ];
 
+        let activeTransactions = [];
+
         const fallbackAccounts = Array.from(new Set(
-            transactions.flatMap(t => [t.dr, t.cr, ...t.wrong])
+            baseTransactions.flatMap(t => [t.dr, t.cr, ...t.wrong])
         ));
 
         let currentIndex = 0;
@@ -580,7 +583,6 @@
         const incorrectAudio = document.getElementById('incorrect-audio');
 
         bgmAudio.volume = 0.25;
-        incorrectAudio.volume = 1.0; 
 
         function playBGMAutomatically() {
             bgmAudio.play().then(() => {
@@ -624,8 +626,12 @@
         }
 
         function playIncorrect() {
-            incorrectAudio.currentTime = 0;
-            incorrectAudio.play().catch(() => {});
+            // Play 2 concurrent instances to set sound to 2x volume level
+            for (let i = 0; i < 2; i++) {
+                const sound = incorrectAudio.cloneNode();
+                sound.volume = 1.0;
+                sound.play().catch(() => {});
+            }
         }
 
         function showScreen(screenId) {
@@ -640,11 +646,16 @@
         }
 
         function shuffle(arr) {
-            return arr.sort(() => Math.random() - 0.5);
+            let array = [...arr];
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
         }
 
         function loadQuestion() {
-            if (currentIndex >= transactions.length) {
+            if (currentIndex >= activeTransactions.length) {
                 endGame();
                 return;
             }
@@ -652,8 +663,8 @@
             currentStage = 'Dr';
             hasFailedCurrent = false;
 
-            const item = transactions[currentIndex];
-            document.getElementById('question-count').textContent = `Q: ${currentIndex + 1} / ${transactions.length}`;
+            const item = activeTransactions[currentIndex];
+            document.getElementById('question-count').textContent = `Q: ${currentIndex + 1} / ${activeTransactions.length}`;
             document.getElementById('score-display').textContent = `Score: ${score} / ${currentIndex}`;
             document.getElementById('stage-indicator').textContent = 'Dr.';
             document.getElementById('item-display').textContent = item.item;
@@ -662,7 +673,7 @@
         }
 
         function setupChoices() {
-            const item = transactions[currentIndex];
+            const item = activeTransactions[currentIndex];
             currentChoices = [];
 
             if (currentStage === 'Dr') {
@@ -674,7 +685,7 @@
                     let rand = fallbackAccounts[Math.floor(Math.random() * fallbackAccounts.length)];
                     if (rand !== item.dr && rand !== item.cr && !pool.includes(rand)) pool.push(rand);
                 }
-                shuffle(pool);
+                pool = shuffle(pool);
                 currentChoices.push(pool[0], pool[1]);
             } else {
                 currentChoices.push(item.cr);
@@ -684,11 +695,11 @@
                     let rand = fallbackAccounts[Math.floor(Math.random() * fallbackAccounts.length)];
                     if (rand !== item.cr && !pool.includes(rand)) pool.push(rand);
                 }
-                shuffle(pool);
+                pool = shuffle(pool);
                 currentChoices.push(pool[0], pool[1], pool[2]);
             }
 
-            shuffle(currentChoices);
+            currentChoices = shuffle(currentChoices);
 
             document.querySelectorAll('.tangerine-node').forEach((node, i) => {
                 node.querySelector('.tangerine-label').textContent = currentChoices[i];
@@ -709,7 +720,7 @@
             setTimeout(() => flash.remove(), 120);
 
             const selected = e.currentTarget.querySelector('.tangerine-label').textContent;
-            const item = transactions[currentIndex];
+            const item = activeTransactions[currentIndex];
 
             if (currentStage === 'Dr') {
                 if (selected === item.dr) {
@@ -744,6 +755,8 @@
             score = 0;
             correctAnswers = [];
             wrongAnswers = [];
+            // Randomize question sequence on every new game start
+            activeTransactions = shuffle(baseTransactions);
             showScreen('game-screen');
             loadQuestion();
         }
@@ -751,7 +764,7 @@
         function endGame() {
             showScreen('results-screen');
 
-            const total = transactions.length;
+            const total = activeTransactions.length;
             const pct = (score / total) * 100;
 
             document.getElementById('results-score-summary').textContent = `Score: ${score} / ${total}`;

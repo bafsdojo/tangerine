@@ -249,7 +249,7 @@
             left: 50%;
             transform: translate(-50%, -30%);
             width: 110px;
-            font-size: 1.05em; /* Updated: 1.5x of previous 0.7em */
+            font-size: 1.05em;
             font-weight: bold;
             color: #fff;
             text-align: center;
@@ -624,11 +624,8 @@
         }
 
         function playIncorrect() {
-            for (let i = 0; i < 10; i++) {
-                const sound = incorrectAudio.cloneNode();
-                sound.volume = 1.0;
-                sound.play().catch(() => {});
-            }
+            incorrectAudio.currentTime = 0;
+            incorrectAudio.play().catch(() => {});
         }
 
         function showScreen(screenId) {

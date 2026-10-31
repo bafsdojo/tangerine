@@ -249,7 +249,7 @@
             left: 50%;
             transform: translate(-50%, -30%);
             width: 110px;
-            font-size: 0.7em;
+            font-size: 1.05em; /* Updated: 1.5x of previous 0.7em */
             font-weight: bold;
             color: #fff;
             text-align: center;
@@ -309,8 +309,24 @@
         }
 
         /* Screen 4: Results Container */
+        #results-screen {
+            position: relative;
+        }
+
+        #results-score-summary {
+            font-size: 1.15em;
+            font-weight: bold;
+            color: #ca3c14;
+            text-align: center;
+            margin-top: 5px;
+            background: #fff;
+            padding: 4px 14px;
+            border-radius: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
         #end-message {
-            font-size: 1.3em;
+            font-size: 1.25em;
             font-weight: bold;
             color: #e68434;
             text-align: center;
@@ -477,6 +493,7 @@
 
     <!-- SCREEN 4: RESULTS -->
     <div class="screen" id="results-screen">
+        <div id="results-score-summary">Score: 0 / 30</div>
         <div id="end-message">Nice Try!</div>
         <div id="results-tables">
             <div class="result-box" id="correct-box">
@@ -517,31 +534,31 @@
             { item: "Owner introduced cash to firm", dr: "Cash", cr: "Capital", wrong: ["Owner", "Bank"] },
             { item: "Proprietor contributed money to the business bank account", dr: "Bank", cr: "Capital", wrong: ["Proprietor", "Cash"] },
             { item: "Borrowed money from bank", dr: "Bank", cr: "Bank Loan", wrong: ["Loan"] },
-            { item: "Repayment of Bank Loan", dr: "Bank Loan", cr: "Bank", wrong: ["Loan"] },
+            { item: "Repayment of bank loan", dr: "Bank Loan", cr: "Bank", wrong: ["Loan"] },
             { item: "Deposited money into bank", dr: "Bank", cr: "Cash", wrong: [] },
             { item: "Withdrew money from bank", dr: "Cash", cr: "Bank", wrong: [] },
             { item: "Acquired office equipment by cash", dr: "Office equipment", cr: "Cash", wrong: [] },
-            { item: "Acquired Motor vehicles on Credit", dr: "Motor vehicles", cr: "Other Payables", wrong: [] },
-            { item: "Return on Motor vehicles that had been acquired on Credit", dr: "Other Payables", cr: "Motor vehicles", wrong: ["Returns inwards", "Returns outwards"] },
-            { item: "Sale of Buildings for Cash, with no gain or loss", dr: "Cash / Bank", cr: "Buildings", wrong: ["Sales", "Purchases"] },
-            { item: "Sale of Buildings on Credit, with no gain or loss", dr: "Other Receivables", cr: "Buildings", wrong: ["Sales", "Purchases"] },
-            { item: "Repayment of Other Payables by bank", dr: "Other Payables", cr: "Bank", wrong: [] },
+            { item: "Acquired motor vehicles on credit", dr: "Motor vehicles", cr: "Other Payables", wrong: [] },
+            { item: "Return on motor vehicles that had been acquired on credit", dr: "Other Payables", cr: "Motor vehicles", wrong: ["Returns inwards", "Returns outwards"] },
+            { item: "Sale of buildings for Cash, with no gain or loss", dr: "Cash", cr: "Buildings", wrong: ["Sales", "Purchases"] },
+            { item: "Sale of buildings on Credit, with no gain or loss", dr: "Other Receivables", cr: "Buildings", wrong: ["Sales", "Purchases"] },
+            { item: "Repayment of other payables by bank", dr: "Other Payables", cr: "Bank", wrong: [] },
             { item: "Owner bringing in furniture for business use", dr: "Furniture", cr: "Capital", wrong: ["Owner"] },
-            { item: "Owner helping business to repay debt", dr: "Bank loan / Other Payables / Trade Payables", cr: "Capital", wrong: ["Owner", "Debt"] },
+            { item: "Owner helping business to repay debt", dr: "Bank loan / Other Payables / Trade Payables (be specific)", cr: "Capital", wrong: ["Owner", "Debt"] },
             { item: "Owner took money from cash box for personal use", dr: "Drawings", cr: "Cash", wrong: ["Bank"] },
             { item: "Purchased goods in cash", dr: "Purchases", cr: "Cash", wrong: ["Sales", "Bank"] },
-            { item: "Purchased goods from credit supplier", dr: "Purchases", cr: "Trade Payables", wrong: ["Sales", "Trade receivables"] },
+            { item: "Purchased goods from credit supplier", dr: "Purchases", cr: "Trade Payables (be specific)", wrong: ["Sales", "Trade receivables"] },
             { item: "Returned goods to supplier, previously bought through bank transfer", dr: "Bank", cr: "Returns Outwards", wrong: ["Returns inwards", "Cash"] },
-            { item: "Returned goods to credit supplier", dr: "Trade Payables", cr: "Returns Outwards", wrong: ["Returns inwards", "Trade receivables"] },
-            { item: "Payment to credit supplier with Cash Discount", dr: "Trade Payables", cr: "Cash / Bank AND Discounts Received", wrong: ["Trade receivables", "Cash / Bank AND Discounts Allowed"] },
+            { item: "Returned goods to credit supplier", dr: "Trade Payables (be specific)", cr: "Returns Outwards", wrong: ["Returns inwards", "Trade receivables"] },
+            { item: "Payment to credit supplier with cash discount", dr: "Trade Payables (be specific)", cr: "Cash / Bank AND Discounts Received", wrong: ["Trade receivables", "Cash / Bank AND Discounts Allowed"] },
             { item: "Sold goods for cash", dr: "Cash", cr: "Sales", wrong: ["Purchases", "Bank"] },
-            { item: "Sold goods on credit", dr: "Trade Receivables", cr: "Sales", wrong: ["Trade payables", "Purchases"] },
+            { item: "Sold goods on credit", dr: "Trade Receivables (be specific)", cr: "Sales", wrong: ["Trade payables", "Purchases"] },
             { item: "Customer, who had previously bought goods in cash, returned goods to the firm", dr: "Returns Inwards", cr: "Cash", wrong: ["Returns outwards", "Bank"] },
-            { item: "Customer, who had previously bought goods on credit, returned goods to the firm", dr: "Returns Inwards", cr: "Trade Receivables", wrong: ["Returns outwards", "Trade payables"] },
-            { item: "Receipt from Customers with Cash Discount", dr: "Cash / Bank AND Discounts Allowed", cr: "Trade Receivables", wrong: ["Cash / Bank AND Discounts Received", "Trade payables"] },
-            { item: "Paid Expenses by Cash", dr: "Expenses", cr: "Cash", wrong: ["Bank"] },
-            { item: "Receive Refund of Overpaid Expenses by Bank", dr: "Bank", cr: "Expenses", wrong: ["Cash"] },
-            { item: "Receipt of Income by Bank Transfer", dr: "Bank", cr: "Income", wrong: ["Cash"] },
+            { item: "Customer, who had previously bought goods on credit, returned goods to the firm", dr: "Returns Inwards", cr: "Trade Receivables (be specific)", wrong: ["Returns outwards", "Trade payables"] },
+            { item: "Receipt from customers with cash discount", dr: "Cash / Bank AND Discounts Allowed", cr: "Trade Receivables (be specific)", wrong: ["Cash / Bank AND Discounts Received", "Trade payables"] },
+            { item: "Paid expenses by cash", dr: "Expenses (be specific)", cr: "Cash", wrong: ["Bank"] },
+            { item: "Receive refund of overpaid expenses by bank", dr: "Bank", cr: "Expenses (be specific)", wrong: ["Cash"] },
+            { item: "Receipt of income by bank transfer", dr: "Bank", cr: "Income (be specific)", wrong: ["Cash"] },
             { item: "Owner withdrew goods for household use", dr: "Drawings", cr: "Purchases", wrong: ["Owner", "Goods"] },
             { item: "Owner withdrew stationery for private use", dr: "Drawings", cr: "Stationery", wrong: ["Owner"] }
         ];
@@ -607,7 +624,6 @@
         }
 
         function playIncorrect() {
-            // Trigger 10 concurrent audio instances to amplify perceived sound to 10x level
             for (let i = 0; i < 10; i++) {
                 const sound = incorrectAudio.cloneNode();
                 sound.volume = 1.0;
@@ -740,6 +756,8 @@
 
             const total = transactions.length;
             const pct = (score / total) * 100;
+
+            document.getElementById('results-score-summary').textContent = `Score: ${score} / ${total}`;
 
             const endMsg = document.getElementById('end-message');
             if (pct === 100) endMsg.textContent = "Congrats! You are the Dojo Master! 🙇🏻‍♂️";

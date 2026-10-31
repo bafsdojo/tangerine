@@ -625,25 +625,8 @@
         }
 
         function playIncorrect() {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            
-            // Web Audio Gain Node set to 3.0 (3x Volume Amplification)
-            try {
-                const source = audioCtx.createMediaElementSource(incorrectAudio);
-                const gainNode = audioCtx.createGain();
-                gainNode.gain.value = 3.0; // Boost to 3x sound level
-                source.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-            } catch (err) {
-                // Ignore if media element source is already connected
-            }
-
-            // Play 3 concurrent audio instances to guarantee 3x sound output across browser types
-            for (let i = 0; i < 3; i++) {
-                const sound = incorrectAudio.cloneNode();
-                sound.volume = 1.0;
-                sound.play().catch(() => {});
-            }
+            incorrectAudio.currentTime = 0;
+            incorrectAudio.play().catch(() => {});
         }
 
         function showScreen(screenId) {

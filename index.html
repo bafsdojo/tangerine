@@ -37,7 +37,7 @@
             height: calc(100vh - 80px);
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-start; /* Requirement 3: Align dialogue boxes to the top */
             position: relative;
         }
 
@@ -82,7 +82,7 @@
         }
 
         .big-tangerine-container:hover {
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
 
         .big-tangerine-img {
@@ -90,6 +90,7 @@
             height: 100%;
             object-fit: contain;
             filter: drop-shadow(0 8px 12px rgba(0,0,0,0.2));
+            overflow: visible; /* Requirement 1: Prevent cutting lower part */
         }
 
         /* Screen 2: Instruction Modal/Screen */
@@ -103,7 +104,7 @@
             font-size: 0.95em;
             line-height: 1.6;
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            margin: auto 0;
+            margin: 10px 0 0 0; /* Requirement 3: Aligned to top instead of auto margin */
         }
 
         /* Screen 3: Game Page Header & HUD */
@@ -239,6 +240,7 @@
             object-fit: contain;
             filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.25));
             pointer-events: none;
+            overflow: visible; /* Requirement 2: Prevent cutting lower part */
         }
 
         .tangerine-label {
@@ -378,21 +380,6 @@
             z-index: 15;
         }
 
-        /* Controls / Audio Toggle */
-        #bgm-toggle {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: #fff;
-            border: 1px solid #ccc;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.75em;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 30;
-        }
-
         #logo-container {
             position: fixed;
             bottom: 10px;
@@ -408,13 +395,12 @@
 </head>
 <body>
 
-    <button id="bgm-toggle">🔊 BGM</button>
-
     <!-- SCREEN 1: INTRO -->
     <div class="screen active" id="intro-screen">
         <h1>Harvest your tangerine!</h1>
         <div class="big-tangerine-container" id="big-tangerine-btn">
-            <svg class="big-tangerine-img" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+            <!-- Requirement 1: Adjusted SVG viewBox from 0 0 512 512 to 0 0 512 580 to prevent clipping -->
+            <svg class="big-tangerine-img" viewBox="0 0 512 580" xmlns="http://www.w3.org/2000/svg">
                 <path fill="#e65100" d="M227.8 77.2c21.2-30.8 11.2-61.1 11.2-61.1s-29.2 13.9-46.7 48.7c-17.5 34.8-13.8 54.4-13.8 54.4s28.1-11.2 49.3-42z"/>
                 <path fill="#66bb6a" d="M256 90.7c75-45.7 186.2-22.3 186.2-22.3s-40 85.9-115 131.6C252.2 245.7 141 222.3 141 222.3s40-85.9 115-131.6z"/>
                 <path fill="#ff9800" d="M256 128c-123.7 0-224 100.3-224 224s100.3 224 224 224 224-100.3 224-224-100.3-224-224-224z"/>
@@ -448,8 +434,9 @@
             <div class="tree-foliage"></div>
             <div class="tree-trunk"></div>
 
+            <!-- Requirement 2: Adjusted SVG viewBox from 0 0 512 512 to 0 0 512 580 on all tangerines -->
             <div class="tangerine-node" id="pos-0">
-                <svg class="tangerine-img" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                <svg class="tangerine-img" viewBox="0 0 512 580" xmlns="http://www.w3.org/2000/svg">
                     <path fill="#e65100" d="M227.8 77.2c21.2-30.8 11.2-61.1 11.2-61.1s-29.2 13.9-46.7 48.7c-17.5 34.8-13.8 54.4-13.8 54.4s28.1-11.2 49.3-42z"/>
                     <path fill="#66bb6a" d="M256 90.7c75-45.7 186.2-22.3 186.2-22.3s-40 85.9-115 131.6C252.2 245.7 141 222.3 141 222.3s40-85.9 115-131.6z"/>
                     <path fill="#ff9800" d="M256 128c-123.7 0-224 100.3-224 224s100.3 224 224 224 224-100.3 224-224-100.3-224-224-224z"/>
@@ -459,7 +446,7 @@
             </div>
 
             <div class="tangerine-node" id="pos-1">
-                <svg class="tangerine-img" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                <svg class="tangerine-img" viewBox="0 0 512 580" xmlns="http://www.w3.org/2000/svg">
                     <path fill="#e65100" d="M227.8 77.2c21.2-30.8 11.2-61.1 11.2-61.1s-29.2 13.9-46.7 48.7c-17.5 34.8-13.8 54.4-13.8 54.4s28.1-11.2 49.3-42z"/>
                     <path fill="#66bb6a" d="M256 90.7c75-45.7 186.2-22.3 186.2-22.3s-40 85.9-115 131.6C252.2 245.7 141 222.3 141 222.3s40-85.9 115-131.6z"/>
                     <path fill="#ff9800" d="M256 128c-123.7 0-224 100.3-224 224s100.3 224 224 224 224-100.3 224-224-100.3-224-224-224z"/>
@@ -469,7 +456,7 @@
             </div>
 
             <div class="tangerine-node" id="pos-2">
-                <svg class="tangerine-img" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                <svg class="tangerine-img" viewBox="0 0 512 580" xmlns="http://www.w3.org/2000/svg">
                     <path fill="#e65100" d="M227.8 77.2c21.2-30.8 11.2-61.1 11.2-61.1s-29.2 13.9-46.7 48.7c-17.5 34.8-13.8 54.4-13.8 54.4s28.1-11.2 49.3-42z"/>
                     <path fill="#66bb6a" d="M256 90.7c75-45.7 186.2-22.3 186.2-22.3s-40 85.9-115 131.6C252.2 245.7 141 222.3 141 222.3s40-85.9 115-131.6z"/>
                     <path fill="#ff9800" d="M256 128c-123.7 0-224 100.3-224 224s100.3 224 224 224 224-100.3 224-224-100.3-224-224-224z"/>
@@ -479,7 +466,7 @@
             </div>
 
             <div class="tangerine-node" id="pos-3">
-                <svg class="tangerine-img" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                <svg class="tangerine-img" viewBox="0 0 512 580" xmlns="http://www.w3.org/2000/svg">
                     <path fill="#e65100" d="M227.8 77.2c21.2-30.8 11.2-61.1 11.2-61.1s-29.2 13.9-46.7 48.7c-17.5 34.8-13.8 54.4-13.8 54.4s28.1-11.2 49.3-42z"/>
                     <path fill="#66bb6a" d="M256 90.7c75-45.7 186.2-22.3 186.2-22.3s-40 85.9-115 131.6C252.2 245.7 141 222.3 141 222.3s40-85.9 115-131.6z"/>
                     <path fill="#ff9800" d="M256 128c-123.7 0-224 100.3-224 224s100.3 224 224 224 224-100.3 224-224-100.3-224-224-224z"/>
@@ -528,7 +515,6 @@
     </audio>
 
     <script>
-        // Updated Double Entry Summary Dataset
         const transactions = [
             { item: "Owner introduced cash to firm", dr: "Cash", cr: "Capital", wrong: ["Owner", "Bank"] },
             { item: "Proprietor contributed money to the business bank account", dr: "Bank", cr: "Capital", wrong: ["Proprietor", "Cash"] },
@@ -562,46 +548,36 @@
             { item: "Owner withdrew stationery for private use", dr: "Drawings", cr: "Stationery", wrong: ["Owner"] }
         ];
 
-        // Pool of fallback accounts
         const fallbackAccounts = Array.from(new Set(
             transactions.flatMap(t => [t.dr, t.cr, ...t.wrong])
         ));
 
-        // State variables
         let currentIndex = 0;
         let score = 0;
-        let currentStage = 'Dr'; // 'Dr' or 'Cr'
-        let hasFailedCurrent = false; // Endless trial check
+        let currentStage = 'Dr';
+        let hasFailedCurrent = false;
         let correctAnswers = [];
         let wrongAnswers = [];
         let currentChoices = [];
 
-        // Audio Management
         const bgmAudio = document.getElementById('bgm-audio');
         const dingAudio = document.getElementById('ding-audio');
         const incorrectAudio = document.getElementById('incorrect-audio');
-        const bgmToggle = document.getElementById('bgm-toggle');
-        let bgmEnabled = true;
 
         bgmAudio.volume = 0.25;
+        // Requirement 4: Set incorrect audio volume to 3x level (capped at maximum 1.0)
+        incorrectAudio.volume = 1.0; 
 
-        function toggleBGM() {
-            bgmEnabled = !bgmEnabled;
-            if (bgmEnabled) {
-                bgmToggle.textContent = "🔊 BGM";
-                if (document.getElementById('game-screen').classList.contains('active') || 
-                    document.getElementById('instruction-screen').classList.contains('active')) {
-                    bgmAudio.play().catch(() => {});
-                }
-            } else {
-                bgmToggle.textContent = "🔇 BGM";
-                bgmAudio.pause();
-            }
+        // Requirement 5: Play BGM automatically on first user interaction anywhere
+        function playBGMAutomatically() {
+            bgmAudio.play().then(() => {
+                document.removeEventListener('click', playBGMAutomatically);
+                document.removeEventListener('touchstart', playBGMAutomatically);
+            }).catch(() => {});
         }
+        document.addEventListener('click', playBGMAutomatically);
+        document.addEventListener('touchstart', playBGMAutomatically);
 
-        bgmToggle.addEventListener('click', toggleBGM);
-
-        // Web Audio Synthesizer for gunshot
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
         function playGunshot() {
@@ -636,16 +612,22 @@
 
         function playIncorrect() {
             incorrectAudio.currentTime = 0;
+            // Requirement 4: Play sound multiple times concurrently to amplify perceived volume 3x
             incorrectAudio.play().catch(() => {});
+            let sound2 = incorrectAudio.cloneNode();
+            sound2.volume = 1.0;
+            sound2.play().catch(() => {});
+            let sound3 = incorrectAudio.cloneNode();
+            sound3.volume = 1.0;
+            sound3.play().catch(() => {});
         }
 
-        // Screen Navigation
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
 
             if (screenId === 'instruction-screen' || screenId === 'game-screen') {
-                if (bgmEnabled) bgmAudio.play().catch(() => {});
+                bgmAudio.play().catch(() => {});
             } else {
                 bgmAudio.pause();
             }
@@ -655,7 +637,6 @@
             return arr.sort(() => Math.random() - 0.5);
         }
 
-        // Game Logic
         function loadQuestion() {
             if (currentIndex >= transactions.length) {
                 endGame();
@@ -680,7 +661,7 @@
 
             if (currentStage === 'Dr') {
                 currentChoices.push(item.dr);
-                currentChoices.push(item.cr); // Always include Cr option on Dr entries
+                currentChoices.push(item.cr);
                 
                 let pool = [...item.wrong];
                 while (pool.length < 2) {
@@ -712,7 +693,6 @@
         function handleShot(e) {
             playGunshot();
 
-            // Muzzle FX
             const rect = document.getElementById('tree-game-container').getBoundingClientRect();
             const flash = document.createElement('div');
             flash.className = 'muzzle-flash';
@@ -734,9 +714,8 @@
                 } else {
                     playIncorrect();
                     hasFailedCurrent = true;
-                    // Stay on question (Endless trial)
                 }
-            } else { // Stage === 'Cr'
+            } else {
                 if (selected === item.cr) {
                     playDing();
                     if (!hasFailedCurrent) {
@@ -750,7 +729,6 @@
                 } else {
                     playIncorrect();
                     hasFailedCurrent = true;
-                    // Stay on question (Endless trial)
                 }
             }
         }
@@ -795,7 +773,6 @@
             });
         }
 
-        // Crosshair movement
         document.addEventListener('mousemove', (e) => {
             const crosshair = document.getElementById('crosshair');
             crosshair.style.display = 'block';
@@ -803,7 +780,6 @@
             crosshair.style.top = `${e.clientY}px`;
         });
 
-        // Event Listeners
         document.getElementById('big-tangerine-btn').addEventListener('click', () => showScreen('instruction-screen'));
         document.getElementById('start-harvest-btn').addEventListener('click', startGame);
         document.getElementById('exit-btn').addEventListener('click', endGame);

@@ -530,7 +530,7 @@
     </audio>
 
     <script>
-        // Clean dataset without "(be specific)"
+        // Updated Dataset from Double Entry Summary_v2_3.docx
         const baseTransactions = [
             { item: "Owner introduced cash to firm", dr: "Cash", cr: "Capital", wrong: ["Owner", "Bank"] },
             { item: "Proprietor contributed money to the business bank account", dr: "Bank", cr: "Capital", wrong: ["Proprietor", "Cash"] },
@@ -557,9 +557,9 @@
             { item: "Customer, who had previously bought goods in cash, returned goods to the firm", dr: "Returns Inwards", cr: "Cash", wrong: ["Returns outwards", "Bank"] },
             { item: "Customer, who had previously bought goods on credit, returned goods to the firm", dr: "Returns Inwards", cr: "Trade Receivables", wrong: ["Returns outwards", "Trade payables"] },
             { item: "Receipt from customers with cash discount", dr: "Cash / Bank AND Discounts Allowed", cr: "Trade Receivables", wrong: ["Cash / Bank AND Discounts Received", "Trade payables"] },
-            { item: "Paid expenses by cash", dr: "Expenses", cr: "Cash", wrong: ["Bank"] },
-            { item: "Receive refund of overpaid expenses by bank", dr: "Bank", cr: "Expenses", wrong: ["Cash"] },
-            { item: "Receipt of income by bank transfer", dr: "Bank", cr: "Income", wrong: ["Cash"] },
+            { item: "Paid rent by cash", dr: "Rental expenses", cr: "Cash", wrong: ["Bank"] },
+            { item: "Receive refund of overpaid rent by bank", dr: "Bank", cr: "Rental expenses", wrong: ["Cash"] },
+            { item: "Receipt of commission by bank transfer", dr: "Bank", cr: "Commissions ncome", wrong: ["Cash"] },
             { item: "Owner withdrew goods for household use", dr: "Drawings", cr: "Purchases", wrong: ["Owner", "Goods"] },
             { item: "Owner withdrew stationery for private use", dr: "Drawings", cr: "Stationery", wrong: ["Owner"] }
         ];
@@ -626,8 +626,8 @@
         }
 
         function playIncorrect() {
-            // Play 2 concurrent instances to set sound to 2x volume level
-            for (let i = 0; i < 2; i++) {
+            // Play 3 concurrent audio instances to amplify sound to 3x level
+            for (let i = 0; i < 3; i++) {
                 const sound = incorrectAudio.cloneNode();
                 sound.volume = 1.0;
                 sound.play().catch(() => {});
@@ -678,22 +678,33 @@
 
             if (currentStage === 'Dr') {
                 currentChoices.push(item.dr);
+                // Include Cr as a distractor option during the Dr stage to trick students
                 currentChoices.push(item.cr);
                 
-                let pool = [...item.wrong];
+                // Prioritize the question's specific wrong options to trick students
+                let pool = [...item.wrong].filter(opt => opt !== item.dr && opt !== item.cr);
+                
+                // Fill up with remaining global accounts if specific wrong options are fewer than required
                 while (pool.length < 2) {
                     let rand = fallbackAccounts[Math.floor(Math.random() * fallbackAccounts.length)];
-                    if (rand !== item.dr && rand !== item.cr && !pool.includes(rand)) pool.push(rand);
+                    if (rand !== item.dr && rand !== item.cr && !pool.includes(rand)) {
+                        pool.push(rand);
+                    }
                 }
                 pool = shuffle(pool);
                 currentChoices.push(pool[0], pool[1]);
-            } else {
+            } else { // Stage === 'Cr'
                 currentChoices.push(item.cr);
                 
-                let pool = [...item.wrong];
+                // Prioritize the question's specific wrong options to trick students
+                let pool = [...item.wrong].filter(opt => opt !== item.cr);
+                
+                // Fill up with remaining global accounts if specific wrong options are fewer than 3
                 while (pool.length < 3) {
                     let rand = fallbackAccounts[Math.floor(Math.random() * fallbackAccounts.length)];
-                    if (rand !== item.cr && !pool.includes(rand)) pool.push(rand);
+                    if (rand !== item.cr && !pool.includes(rand)) {
+                        pool.push(rand);
+                    }
                 }
                 pool = shuffle(pool);
                 currentChoices.push(pool[0], pool[1], pool[2]);
@@ -755,7 +766,6 @@
             score = 0;
             correctAnswers = [];
             wrongAnswers = [];
-            // Randomize question sequence on every new game start
             activeTransactions = shuffle(baseTransactions);
             showScreen('game-screen');
             loadQuestion();

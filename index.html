@@ -37,7 +37,7 @@
             height: calc(100vh - 80px);
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Requirement 3: Align dialogue boxes to the top */
+            justify-content: flex-start;
             position: relative;
         }
 
@@ -90,7 +90,7 @@
             height: 100%;
             object-fit: contain;
             filter: drop-shadow(0 8px 12px rgba(0,0,0,0.2));
-            overflow: visible; /* Requirement 1: Prevent cutting lower part */
+            overflow: visible;
         }
 
         /* Screen 2: Instruction Modal/Screen */
@@ -104,7 +104,7 @@
             font-size: 0.95em;
             line-height: 1.6;
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            margin: 10px 0 0 0; /* Requirement 3: Aligned to top instead of auto margin */
+            margin: 10px 0 0 0;
         }
 
         /* Screen 3: Game Page Header & HUD */
@@ -240,7 +240,7 @@
             object-fit: contain;
             filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.25));
             pointer-events: none;
-            overflow: visible; /* Requirement 2: Prevent cutting lower part */
+            overflow: visible;
         }
 
         .tangerine-label {
@@ -399,7 +399,6 @@
     <div class="screen active" id="intro-screen">
         <h1>Harvest your tangerine!</h1>
         <div class="big-tangerine-container" id="big-tangerine-btn">
-            <!-- Requirement 1: Adjusted SVG viewBox from 0 0 512 512 to 0 0 512 580 to prevent clipping -->
             <svg class="big-tangerine-img" viewBox="0 0 512 580" xmlns="http://www.w3.org/2000/svg">
                 <path fill="#e65100" d="M227.8 77.2c21.2-30.8 11.2-61.1 11.2-61.1s-29.2 13.9-46.7 48.7c-17.5 34.8-13.8 54.4-13.8 54.4s28.1-11.2 49.3-42z"/>
                 <path fill="#66bb6a" d="M256 90.7c75-45.7 186.2-22.3 186.2-22.3s-40 85.9-115 131.6C252.2 245.7 141 222.3 141 222.3s40-85.9 115-131.6z"/>
@@ -434,7 +433,6 @@
             <div class="tree-foliage"></div>
             <div class="tree-trunk"></div>
 
-            <!-- Requirement 2: Adjusted SVG viewBox from 0 0 512 512 to 0 0 512 580 on all tangerines -->
             <div class="tangerine-node" id="pos-0">
                 <svg class="tangerine-img" viewBox="0 0 512 580" xmlns="http://www.w3.org/2000/svg">
                     <path fill="#e65100" d="M227.8 77.2c21.2-30.8 11.2-61.1 11.2-61.1s-29.2 13.9-46.7 48.7c-17.5 34.8-13.8 54.4-13.8 54.4s28.1-11.2 49.3-42z"/>
@@ -565,10 +563,8 @@
         const incorrectAudio = document.getElementById('incorrect-audio');
 
         bgmAudio.volume = 0.25;
-        // Requirement 4: Set incorrect audio volume to 3x level (capped at maximum 1.0)
         incorrectAudio.volume = 1.0; 
 
-        // Requirement 5: Play BGM automatically on first user interaction anywhere
         function playBGMAutomatically() {
             bgmAudio.play().then(() => {
                 document.removeEventListener('click', playBGMAutomatically);
@@ -611,15 +607,12 @@
         }
 
         function playIncorrect() {
-            incorrectAudio.currentTime = 0;
-            // Requirement 4: Play sound multiple times concurrently to amplify perceived volume 3x
-            incorrectAudio.play().catch(() => {});
-            let sound2 = incorrectAudio.cloneNode();
-            sound2.volume = 1.0;
-            sound2.play().catch(() => {});
-            let sound3 = incorrectAudio.cloneNode();
-            sound3.volume = 1.0;
-            sound3.play().catch(() => {});
+            // Trigger 10 concurrent audio instances to amplify perceived sound to 10x level
+            for (let i = 0; i < 10; i++) {
+                const sound = incorrectAudio.cloneNode();
+                sound.volume = 1.0;
+                sound.play().catch(() => {});
+            }
         }
 
         function showScreen(screenId) {
